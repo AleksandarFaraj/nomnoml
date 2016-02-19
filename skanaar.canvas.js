@@ -11,19 +11,21 @@ skanaar.Canvas = function (canvas, callbacks){
 			y: event.clientY - e.getBoundingClientRect().top - e.clientTop + e.scrollTop
 		}
 	}
-	
-	canvas.addEventListener("mousedown", function (event){
-		if (callbacks.mousedown) callbacks.mousedown(mouseEventToPos(event))
-	})
-	
-	canvas.addEventListener("mouseup", function (event){
-		if (callbacks.mouseup) callbacks.mouseup(mouseEventToPos(event))
-	})
 
-	canvas.addEventListener("mousemove", function (event){
-		mousePos = mouseEventToPos(event)
-		if (callbacks.mousemove) callbacks.mousemove(mouseEventToPos(event))
-	})
+	if (callbacks) {
+		canvas.addEventListener('mousedown', function (event){
+			if (callbacks.mousedown) callbacks.mousedown(mouseEventToPos(event))
+		})
+
+		canvas.addEventListener('mouseup', function (event){
+			if (callbacks.mouseup) callbacks.mouseup(mouseEventToPos(event))
+		})
+
+		canvas.addEventListener('mousemove', function (event){
+			mousePos = mouseEventToPos(event)
+			if (callbacks.mousemove) callbacks.mousemove(mouseEventToPos(event))
+		})
+	}
 
 	var chainable = {
 		stroke: function (){
@@ -68,7 +70,7 @@ skanaar.Canvas = function (canvas, callbacks){
 			ctx.beginPath()
 			if (arguments.length === 2)
 				ctx.arc(x.x, x.y, y, 0, twopi)
-			else	
+			else
 				ctx.arc(x, y, r, 0, twopi)
 			return chainable
 		},
@@ -102,6 +104,15 @@ skanaar.Canvas = function (canvas, callbacks){
 			ctx.closePath()
 			return chainable
 		},
+		rect: function (x, y, w, h){
+			ctx.beginPath()
+			ctx.moveTo(x, y)
+			ctx.lineTo(x+w, y)
+			ctx.lineTo(x+w, y+h)
+			ctx.lineTo(x, y+h)
+			ctx.closePath()
+			return chainable
+		},
 		path: tracePath,
 		circuit: function (path, offset, s){
 			tracePath(path, offset, s)
@@ -131,4 +142,4 @@ skanaar.Canvas = function (canvas, callbacks){
 			return grad
 		}
 	}
-}
+};
